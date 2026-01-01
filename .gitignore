@@ -1,0 +1,8 @@
+*.gb
+*.gbc
+*.sav
+*.txt
+*.sym
+*.map
+build
+obj/
