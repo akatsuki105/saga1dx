@@ -1,4 +1,4 @@
-SECTION "SpriteAttr", ROMX, BANK[8]
+SECTION FRAGMENT "bank8", ROMX
 SpriteAttr::
   ;000 Hero Human Male
   db $01,$01,$05,$05,$01,$01,$05,$05,$01,$01,$05,$05,$01,$01,$05,$05
@@ -73,6 +73,5 @@ SpriteAttr::
   db $01,$01,$01,$01,$01,$01,$01,$01,$01,$01,$01,$01,$01,$01,$01,$01
   ;30
   db $01,$01,$01,$01,$01,$01,$01,$01,$01,$01,$01,$01,$01,$01,$01,$01
-  PRINTLN STRFMT("SpriteAttr size: %d bytes", @ - SpriteAttr)
 SpriteAttrEnd::
 

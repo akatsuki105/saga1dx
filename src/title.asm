@@ -1,5 +1,5 @@
 SECTION "Title_Hook", ROMX[$7D9B], BANK[3]
-  call InitializeTitle
+  call InitializeTitleDX
 
 ; タイトルロゴがチラ見えしないようにしておく
 SECTION "Title7E2D_Hook", ROMX[$7E31], BANK[3]
@@ -9,17 +9,13 @@ SECTION "Title7E66_Hook", ROMX[$7E66], BANK[3]
   ld a, $0
   ldh [rSCX], a
 
-SECTION "Free_TitleCode", ROM0
-InitializeTitle:
-  call $7FDF ; original code, US: $7EC3
-  di
-  set_rombank 8
-  call InitializeTitle_Far
-  set_rombank 3
-  reti
-  PRINTLN STRFMT("Free_TitleCode size: %d bytes", @ - InitializeTitle)
+SECTION FRAGMENT "Free_247", ROM0
+InitializeTitleDX:
+  call FUN_03_7FDF
+  farcall InitializeTitle_Far
+  ret
 
-SECTION "Title_FarCode", ROMX, BANK[8]
+SECTION FRAGMENT "bank8", ROMX
 InitializeTitle_Far:
   ; タイトルロゴがチラ見えしないようにしておく
   call WaitForVBlank_ByHand
@@ -27,10 +23,10 @@ InitializeTitle_Far:
   ldh [rLCDC], a
   set_vrambank 1
   ld hl, TitleBGAttr
-  ld de, $9800
+  ld de, TILEMAP0
   ld bc, $0240
+  call VRAMEnable
 .loopLoadBGAttr
-    wait_blank
 rept 2
     ld a, [hli]
     ld [de], a
@@ -42,10 +38,9 @@ endr
     jr nz, .loopLoadBGAttr
   ; タイトルアニメーションのSaGaはウィンドウなので、属性マップをウィンドウにも設定する
   ld hl, TitleBGAttr + $A0
-  ld de, $9C00
+  ld de, TILEMAP1
   ld b, $70
 .loopLoadWindowAttr
-    wait_blank
 rept 4
     ld a, [hli]
     ld [de], a
@@ -53,13 +48,12 @@ rept 4
     dec b
 endr
     jr nz, .loopLoadWindowAttr
-  reset_vrambank
+  set_vrambank 0
   ld hl, InitialTitlePal
   ld a, $80            ; Set index to first color + auto-increment
   ldh [rBGPI], a    
   ld b, 64             ; 32 color entries=0x40 bytes
 .loopTitleBGPAL
-    wait_blank
 rept 8
     ld a, [hli]    ; 2t
     ldh [rBGPD], a ; 3t
@@ -71,13 +65,13 @@ endr
   ldh [rOBPI], a
   ld b, 64             ; 32 color entries=0x40 bytes
 .loopTitleOAMPAL
-    wait_blank
 rept 8
     ld a, [hli]
     ldh [rOBPD], a
     dec b
 endr
     jr nz, .loopTitleOAMPAL
+  call VRAMDisable
   ret
 
 

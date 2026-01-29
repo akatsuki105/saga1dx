@@ -1,6 +1,4 @@
-ROMNAME := SaGa1
 PADVALUE := 0x00
-
 
 # 0x13F–0x142
 GAMEID := SAGA

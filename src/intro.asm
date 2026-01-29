@@ -1,24 +1,19 @@
 ; US: $7E2E
-SECTION "Intro_Hook7F37", ROMX[$7F37], BANK[3]
-  call Intro
+SECTION "Intro_Hook7F32", ROMX[$7F32], BANK[3]
+  farcall IntroDX
+  nop
+  nop
 
-SECTION "Free_IntroCode", ROM0
-Intro:
-  di
-  set_rombank 8
-  call Intro_Far
-  set_rombank 3
-  reti
-  PRINTLN STRFMT("Free_IntroCode size: %d bytes", @ - Intro)
-
-SECTION "IntroFarCode", ROMX, BANK[8]
+SECTION FRAGMENT "bank8", ROMX
 ; a = Tile, bc = count, hl = dst
-Intro_Far:
+IntroDX:
+  ld hl, TILEMAP0
+  ld a, $7F
   push hl ; ループが2回あるので、hl, bcをスタックに保存
   push bc
   set_vrambank 1
+  call VRAMEnable
 .loop1
-    wait_blank
     ld a, $07
     ld [hli], a
     dec bc
@@ -29,15 +24,15 @@ Intro_Far:
   pop hl
   push hl
   push bc
-  reset_vrambank
+  set_vrambank 0
 .loop2
-    wait_blank
     ld a, $7F
     ld [hli], a
     dec bc
     ld a, b
     or c
     jr nz, .loop2
+  call VRAMDisable
   pop bc
   pop hl
   ret

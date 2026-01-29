@@ -1,7 +1,7 @@
 ; Hooks
 
 SECTION "SetFade3DD0_Hook", ROM0[$3DC8]
-  call SetPaletteBlack
+  farcall FillPaletteBlack
   ret
 
 SECTION "SetFade3DE2_Hook", ROM0[$3DDA]
@@ -13,40 +13,20 @@ SECTION "SetFade7D62_Hook", ROMX[$7D5D], BANK[3]
 
 ; --------------------------
 
-SECTION "Free_FadeCode", ROM0
-SetPaletteBlack:
-  farcall wFillPaletteBlack
-  ret
-
+SECTION FRAGMENT "Free_247", ROM0
 SetPaletteNormal:
   push hl
   ld hl, wPaletteBG
-  call LoadBGPalette
+  farcall LoadBGPalette
   ld hl, wPaletteOBJ
-  call LoadOBJPalette
+  farcall LoadOBJPalette
   pop hl
   ret
 
-LoadBGPalette::
-  ; hl = Palette address
-  farcall wLoadBGPalette
-  ret
-
-LoadOBJPalette:
-  ; hl = Palette address
-  farcall wLoadOBJPalette
-  ret
-
-LoadWhiteBGPalette::
-  farcall wLoadWhiteBGPalette
-  ret
-  PRINTLN STRFMT("Free_FadeCode size: %d bytes", @ - SetPaletteBlack)
-
 ; --------------------------
 
-SECTION "PaletteCode", ROMX, BANK[8]
+SECTION FRAGMENT "bank8", ROMX
 InitializeFadeLookup:
-  di
   push_all
   set_wrambank WRAM_PALETTE_BANK
   ld hl, wPalettes
@@ -56,9 +36,9 @@ InitializeFadeLookup:
   ld hl, wPalettes + (WRAM_PALETTE_SIZE * 8)
   ld b, $FF
   call LoadFadeBlack
-  reset_wrambank
+  set_wrambank 1
   pop_all
-  reti
+  ret
 
 LoadFadeLevel:
   push_all
@@ -109,7 +89,6 @@ LoadFadeBlack:
     jr nz, .loop
   jp PopAndReturn + 2 ; bc, af
 
-SECTION FRAGMENT "RAMDataLoader", ROMX, BANK[8]
 LoadPaletteRAMData::
   set_wrambank WRAM_PALETTE_BANK
   xor a
@@ -117,16 +96,87 @@ LoadPaletteRAMData::
   dec a
   ld [wLastFadeValue], a ; [wLastFadeValue] = 0xFF
   ; Load DX Palette Data
-    ld a, BANK(wPalettes)
     ld bc, InitialPalEnd - InitialPal
     ld de, wPalettes
     ld hl, InitialPal
-    call CopyFarCodeToWRAM
+    call memcpy16
   call InitializeFadeLookup
   ; Load DX Palette Lookup Data
-    ld a, BANK(wPaletteLookup)
     ld bc, PaletteLookupEnd - PaletteLookup
     ld de, wPaletteLookup
     ld hl, PaletteLookup
-    call CopyFarCodeToWRAM
+    call memcpy16
+  set_wrambank 1
+  ret
+
+LoadBGPalette::
+  ; hl = palette addr (*u16)
+  push af
+  push bc
+  ld a, $80
+  ldh [rBGPI], a
+  ld b, WRAM_PALETTE_SIZE
+  call VRAMEnable
+  set_wrambank WRAM_PALETTE_BANK
+.loop
+    ld a, [hli]
+    ldh [rBGPD], a
+    dec b
+    jr nz, .loop
+  set_wrambank 1
+  call VRAMDisable
+  pop bc
+  pop af
+  ret
+
+LoadOBJPalette:
+  ; hl = palette addr (*u16)
+  push af
+  push bc
+  ld a, $80
+  ldh [rOBPI], a
+  ld b, WRAM_PALETTE_SIZE
+  call VRAMEnable
+  set_wrambank WRAM_PALETTE_BANK
+.loop
+    ld a, [hli]
+    ldh [rOBPD], a
+    dec b
+    jr nz, .loop
+  set_wrambank 1
+  call VRAMDisable
+  pop bc
+  pop af
+  ret
+
+LoadWhiteBGPalette::
+  ld a, $80
+  ldh [rBGPI], a
+  ld b, (WRAM_PALETTE_SIZE/8) ; rgb555 x 32色
+  call VRAMEnable
+.loop
+    ld a, $FF
+rept 8
+    ldh [rBGPD], a
+endr
+    dec b
+    jr nz, .loop
+  call VRAMDisable
+  ret
+
+FillPaletteBlack::
+  ld a, $80
+  ldh [rBGPI], a
+  ldh [rOBPI], a
+  call VRAMEnable
+  ld b, (WRAM_PALETTE_SIZE/4) ; rgb555 x 32色
+.loop
+    xor a ; ここが黒に変わっただけで、 wLoadWhiteBGPalette とやることは同じ
+rept 4
+    ldh [rBGPD], a
+    ldh [rOBPD], a
+endr
+    dec b
+    jr nz, .loop
+  call VRAMDisable
   ret

@@ -1,7 +1,5 @@
 
-INCLUDE "metatileattr.inc"
-
-SECTION "MetatileAttr", ROMX, BANK[8]
+SECTION FRAGMENT "bank8", ROMX
 MetatileAttr::
 	;000 - 
 	dl MT_DIRT,	MT_DIRT,	MT_SHINDEN,	MT_SHINDEN,	MT_SHINDEN,	MT_SHINDEN,	MT_TOWN,	MT_STAIRS

@@ -6,7 +6,7 @@ DEF PALETTE_AQUA    EQU $04
 DEF PALETTE_BLUE    EQU $05
 DEF PALETTE_PURPLE  EQU $06
 
-SECTION "EnemyPalettes", ROMX, BANK[8]
+SECTION FRAGMENT "bank8", ROMX
 EnemyColors::
   ;  00 Fly			 01 Drgonfly		02 Hornet		03 Mosquito		04 Cicada		05 Mantis
   db PALETTE_GRAY, PALETTE_GREEN, PALETTE_ORANGE, PALETTE_BLUE, PALETTE_PURPLE, PALETTE_RED
@@ -98,6 +98,4 @@ EnemyColors::
 	db PALETTE_PURPLE
 	;C7 Creator
 	db PALETTE_ORANGE
-ENDSECTION
-	PRINTLN STRFMT("EnemyColors size: %d bytes", SIZEOF("EnemyPalettes"))
 

@@ -1,3 +1,14 @@
+SECTION "wFarCall2", WRAM0[$C0A0]
+wFarCall2::
+  ; ld a, ??
+  db
+.A::
+  db
+  ; jp ????
+  db ; jp
+.Dst::
+  dw ; dst
+
 SECTION "MetatileRAM", WRAMX[$D000], BANK[WRAM_METATILE_BANK]
 wMetatileAttr::
   ds $500

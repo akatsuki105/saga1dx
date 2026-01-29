@@ -4,12 +4,8 @@ ROM0
     org $0200
   ;
     org $0224 ; 267 Bytes
-      "Free_Start"      ; 36 Bytes
-      "Free_BattleCode" ; 66 Bytes -> 102
-      "Free_FarCall"    ; 51 Bytes -> 153
-      "Free_SpriteCode" ; 48 Bytes -> 201
-      "Free_FadeCode"   ; 43 Bytes -> 244
-      "Free_TitleCode"  ; 18 Bytes -> 262
+      "Boot"
+      "Free_247"
     org $032F
   ;
     org $144F ; 23 Bytes
@@ -17,7 +13,6 @@ ROM0
     org $1466
   ;
     org $2CFF ; 15 Bytes
-      "Free_IntroCode" ; 15 Bytes
     org $2D0E
   ;
     org $3DCC ; 12 Bytes
@@ -29,30 +24,8 @@ ROM0
     org $3DED
 
 ROMX $08
-  org $4000
-  "RAMCodeLoader"
-  "RAMDataLoader"
-  "EnemyPalettes"
-  "SetEnemyAttr"
-  "RAMCopiedCode_Battle"
-  "RAMCopiedCode_Metatile"
-  "RAMCopiedCode_Palette"
-  "RAMCopiedCode_Sprite"
-  "RAMCopiedCode_Menu"
-  "PaletteCode"
-  "IntroFarCode"
-  "SystemCode"
-  "RAMCopiedCode_Start"
+  "bank8"
 
-  ; Data
-  "MetatileAttr"
-  "Palettes"
-  "SpriteAttr"
-  "TitleAttrs"
-
-  ; FarCode
-  "Title_FarCode"
-
-
-
-
+WRAMX $1
+  org $D000
+  "WRAM1"

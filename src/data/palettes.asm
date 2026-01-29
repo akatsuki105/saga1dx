@@ -1,16 +1,16 @@
-SECTION "Palettes", ROMX, BANK[8]
+SECTION FRAGMENT "bank8", ROMX
 
 ; BGP7 はどのパレットでもウィンドウに使うので固定
 
 InitialPal::
 InitialBGPal:
-  dw $7FFF,$6AD8,$5A54,$0000
-  dw $295F,$2538,$2110,$0000
-  dw $5376,$2351,$2A2A,$0000
-  dw $7FFF,$7353,$6A2D,$4100
+  dw $6FFB,$6AD8,$5A54,$0000
+  dw $195E,$2538,$2110,$0000
+  dw $2BF6,$072C,$01C5,$0000
+  dw $7EF7,$7E72,$7D8D,$4100
   dw $535C,$3214,$110C,$0000
   dw $6B9E,$5B1A,$3A56,$0000
-  dw $7FFF,$6A9F,$723A,$0000
+  dw $6FFB,$71DF,$54BF,$0000
   dw $4000,$5AD6,$2108,$7FFF
 
 InitialOBJPal::
