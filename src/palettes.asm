@@ -115,7 +115,7 @@ LoadBGPalette::
   push bc
   ld a, $80
   ldh [rBGPI], a
-  ld b, WRAM_PALETTE_SIZE
+  ld b, (PAL_SIZE * 8)
   call VRAMEnable
   set_wrambank WRAM_PALETTE_BANK
 .loop
@@ -135,7 +135,7 @@ LoadOBJPalette:
   push bc
   ld a, $80
   ldh [rOBPI], a
-  ld b, WRAM_PALETTE_SIZE
+  ld b, (PAL_SIZE * 8)
   call VRAMEnable
   set_wrambank WRAM_PALETTE_BANK
 .loop
@@ -164,19 +164,29 @@ endr
   call VRAMDisable
   ret
 
+FillPaletteWhite::
+  ld a, $FF ; RGB 31, 31, 31
+  jr FillPalette
 FillPaletteBlack::
+  xor a
+  ; fallthrough
+
+; parameters:
+;  a = color to fill
+FillPalette::
+  push bc
+  push af
   ld a, $80
   ldh [rBGPI], a
   ldh [rOBPI], a
   call VRAMEnable
-  ld b, (WRAM_PALETTE_SIZE/4) ; rgb555 x 32色
+  ld b, (PAL_SIZE * 8)
+  pop af
 .loop
-    xor a ; ここが黒に変わっただけで、 wLoadWhiteBGPalette とやることは同じ
-rept 4
     ldh [rBGPD], a
     ldh [rOBPD], a
-endr
     dec b
     jr nz, .loop
   call VRAMDisable
+  pop bc
   ret

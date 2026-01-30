@@ -8,7 +8,7 @@ _Start::
 .done
   jp $032F ; US: $0349
 
-; SaGaのフォントデータは容量節約のため、 1文字 8x4px で、VRAMに展開する際に縦に2倍に引き延ばしている
+; SaGaのフォントデータは容量節約のため、 1bpp でVRAM展開時に 2bpp にしている
 ; なので単純な memcpy はできない
 SECTION FRAGMENT "Free_247", ROM0
 LoadPackedFont::
@@ -30,9 +30,6 @@ LoadPackedFont::
   pop af
   rst SwitchBank
   ret
-
-SECTION "GameOverVector", ROMX[$6298], BANK[6]
-  jmp _Start
 
 SECTION FRAGMENT "bank8", ROMX
 Init::
@@ -238,13 +235,13 @@ InitHRAM::
   ld a, BANK(@)
   ldh [hCurrentROMBank], a
   ; HRAMコードのコピー ($0276)
-  ld hl, _RunOAMDMA
   ld de, hOAMDMACode
+  ld hl, _RunOAMDMA
   ld b, $8
   call memcpy8
   ret
 
-; なんかのデータのコピー
+; ウィンドウ枠のタイルデータ読み込み(フォントと連続して配置されているが、こっちは圧縮されていないので別途処理する)
 LoadWindowBorderTileData:
   ld de, $9770                  ; dst
   ld hl, FontTileData + $3B8    ; src (addr)
@@ -255,17 +252,17 @@ LoadWindowBorderTileData:
 
 ; タイトル画面のタイルデータ読み込み
 LoadTitleScreenTiles:
-  ld  hl, TitleTiledata
-  ld  de, $8800
-  ld  bc, $400
-  ld  a, BANK(TitleTiledata)
+  ld  de, $8800                 ; dst
+  ld  hl, TitleTiledata         ; src (addr)
+  ld  a, BANK(TitleTiledata)    ; src (bank)
+  ld  bc, $400                  ; size
   call memcpy16_far
   ret
 
 LoadMiscTileData:
-  ld  hl, MiscTileData
-  ld  de, $8F00
-  ld  b, $0
-  ld  a, BANK(MiscTileData)
+  ld  de, $8F00                 ; dst
+  ld  hl, MiscTileData          ; src (addr)
+  ld  a, BANK(MiscTileData)     ; src (bank)
+  ld  b, $0                     ; size (0 = 256)
   call memcpy8_far
   ret

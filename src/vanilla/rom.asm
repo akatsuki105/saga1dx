@@ -82,6 +82,12 @@ _RunOAMDMA::
 SECTION "multiply_8_8", ROM0[$015F]
 multiply_8_8:: ; jp _multiply_8_8
 
+SECTION "multiply_16_16", ROM0[$0162]
+multiply_16_16:: ; jp _multiply_16_16
+
+SECTION "divide_16_16", ROM0[$0165]
+divide_16_16:: ; jp _divide_16_16
+
 SECTION "VRAMEnable", ROM0[$017A]
 VRAMEnable:: ; jp _VRAMEnable
 SECTION "VRAMDisable", ROM0[$017D]
@@ -95,10 +101,23 @@ FarCall:: ; jp _FarCall
 SECTION "FUN_0186", ROM0[$0186]
 FUN_0186:: ; jp _FUN_0186
 
+SECTION "LoadMenuSprite", ROM0[$0189]
+LoadMenuSprite:: ; jp _LoadMenuSprite
+
+SECTION "LoadMetasprite", ROM0[$018F]
+LoadMetasprite:: ; jp _LoadMetasprite
+
+SECTION "SetMetaspriteAttribute", ROM0[$0192]
+SetMetaspriteAttribute:: ; jp _SetMetaspriteAttribute
+
+SECTION "SetMetaspriteTileIndex", ROM0[$0195]
+SetMetaspriteTileIndex:: ; jp _SetMetaspriteTileIndex
+
 SECTION "FUN_01D7", ROM0[$01D7]
 FUN_01D7::
 
 SECTION "WaitForVBlank_ByHand", ROM0[$01DD]
+; LY == 144 になるまで forループで待つ
 WaitForVBlank_ByHand::
 
 SECTION "memcpy8_far", ROM0[$0200]
@@ -111,6 +130,20 @@ memcpy16_far::
 
 SECTION "vramcpy8_far", ROM0[$020E]
 vramcpy8_far::
+
+SECTION "_LoadMetasprite", ROM0[$03BF]
+; wOAM1 や wOAM2 にメタスプライトのデータを書き込む
+; parameters:
+;  hl = dst in WRAM, d = y, e = x, a = tileID, c = attributes
+_LoadMetasprite::
+
+SECTION "_SetMetaspriteAttribute", ROM0[$03D3]
+; parameters:
+;  hl = OAM.3 addr in WRAM (e.g. $C003), a = attribute (GBの OAM.3 と同じフォーマット)
+_SetMetaspriteAttribute::
+
+SECTION "_SetMetaspriteTileIndex", ROM0[$03E0]
+_SetMetaspriteTileIndex::
 
 SECTION "_VRAMEnable", ROM0[$0423]
 _VRAMEnable:: ; US: 043D
@@ -126,17 +159,20 @@ SECTION "_FarCall", ROM0[$0469]
 ; このパッチでは FarCall2 を使うようにしたので、このコードは使われない
 _FarCall::
 
+SECTION "_LoadMenuSprite", ROM0[$059B]
+_LoadMenuSprite::
+
 SECTION "VBlank", ROM0[$06B9]
 VBlank::
 
 SECTION "_multiply_8_8", ROM0[$071C]
 _multiply_8_8::
 
-SECTION "multiply_16_16", ROM0[$0733]
-multiply_16_16:: ; US: $074D
+SECTION "_multiply_16_16", ROM0[$0733]
+_multiply_16_16:: ; US: $074D
 
-SECTION "divide_16_16", ROM0[$0759]
-divide_16_16:: ; US: $0773
+SECTION "_divide_16_16", ROM0[$0759]
+_divide_16_16:: ; US: $0773
 
 SECTION "FUN_14E4", ROM0[$14E4]
 FUN_14E4::
@@ -177,8 +213,17 @@ EnemyTileData:: ; このバンク全部が敵キャラの2bppタイルデータ
 
 ; ------------------ ROM6 --------------------
 
-SECTION "LoadBattleScreenGraphic", ROMX[$5E35], BANK[6]
-LoadBattleScreenGraphic::
+SECTION "Scene_Battle", ROMX[$4000], BANK[6]
+Scene_Battle:: ; jp _Scene_Battle
+
+SECTION "_Scene_Battle", ROMX[$4006], BANK[6]
+_Scene_Battle::
+
+SECTION "LoadBattleScreenGraphic", ROMX[$5E00], BANK[6]
+LoadBattleScreenGraphic:: ; jp _LoadBattleScreenGraphic
+
+SECTION "_LoadBattleScreenGraphic", ROMX[$5E35], BANK[6]
+_LoadBattleScreenGraphic:: ; farcall __LoadBattleScreenGraphic
 
 ; ------------------ ROM7 --------------------
 
@@ -186,3 +231,9 @@ SECTION "ResetAudio", ROMX[$4000], BANK[7]
 ResetAudio::
 SECTION "UpdateAudio", ROMX[$4003], BANK[7]
 UpdateAudio::
+
+SECTION "__LoadBattleScreenGraphic", ROMX[$6E00], BANK[7]
+__LoadBattleScreenGraphic:: ; jp ___LoadBattleScreenGraphic
+
+SECTION "___LoadBattleScreenGraphic", ROMX[$71AC], BANK[7]
+___LoadBattleScreenGraphic:: ; ここが本体

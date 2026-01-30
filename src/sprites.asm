@@ -28,6 +28,15 @@ SECTION "StoreSpriteIDs_Hook251A", ROM0[$251E]
 SECTION "StoreSpriteIDs_Hook256A", ROM0[$256E]
   call StoreSpriteIDs
 
+; このパッチでは vramcpy の時に、vramcpy の引数から　スプライトの属性 を計算して WRAM に保存しておき、 OAM の更新時にフックして、その保存した属性を反映している
+; つまり スプライトの着色はスプライトのタイルデータが vramcpy されている前提で動作する
+; 大抵の部分はまず vramcpy してから OAM 更新なので問題ないが、いくつか OAM を更新してから vramcpy する部分があるため、その部分では正しく色が反映されないため、特殊処理をする
+SECTION "Hook_LoadMenuSprite_NameInput", ROMX[$7CA3], BANK[3]
+  farcall LoadMenuSpriteDX_NameInput
+SECTION "Hook_LoadMenuSprite_Battle", ROMX[$6325], BANK[6]
+  nop
+  farcall LoadMenuSpriteDX_Battle
+
 ; JP/US: Same address
 SECTION "EffectSpriteAttribute_Hook7166", ROMX[$7166], BANK[7]
   call EffectSpriteAttribute
@@ -73,6 +82,38 @@ LoadSpriteAttrs::
   set_wrambank 1
   ret
 
+LoadMenuSpriteDX_Battle:
+  ; original code
+  add 5
+  ld l, a
+  ld a, [hl]
+  call LoadMenuSpriteDX
+  ret
+
+LoadMenuSpriteDX_NameInput:
+  ld de, $8000 ; original code
+  call LoadMenuSpriteDX
+  ret
+
+LoadMenuSpriteDX:
+  call _LoadMenuSprite ; ここで StoreSpriteIDs8 がセットされる
+  push af
+  push hl
+  xor a
+  ld hl, wOAM1 + $03
+  call _SetMetaspriteAttribute
+  ld hl, wOAM1 + $13
+  call _SetMetaspriteAttribute
+  ld hl, wOAM1 + $23
+  call _SetMetaspriteAttribute
+  ld hl, wOAM1 + $33
+  call _SetMetaspriteAttribute
+  pop hl
+  pop af
+  ret
+
+; parameters:
+;  hl = $C0x3 (wOAM1)
 _MenuSpriteAttribute:
   push de
   ; hl = shadow OAM location

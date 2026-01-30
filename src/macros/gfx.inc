@@ -1,3 +1,5 @@
+; RGB555 color macro
+; RGB r5,g5,b5, r5,g5,b5, ...
 MACRO RGB
 	rept _NARG / 3
 		if DEF(NOIR) && !DEF(LITERAL_NOIR_RGB_COLORS)

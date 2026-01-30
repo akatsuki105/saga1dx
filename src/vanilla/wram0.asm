@@ -3,6 +3,7 @@ wOAM1::
   ds $A0
 
 SECTION "wOAM2", WRAM0[$C100]
+; キャラクターのアニメーション用
 wOAM2::
   ds $A0
 

@@ -1,48 +1,37 @@
 SECTION FRAGMENT "bank8", ROMX
-
-; BGP7 はどのパレットでもウィンドウに使うので固定
-
 InitialPal::
 InitialBGPal:
-  dw $6FFB,$6AD8,$5A54,$0000
-  dw $195E,$2538,$2110,$0000
-  dw $2BF6,$072C,$01C5,$0000
-  dw $7EF7,$7E72,$7D8D,$4100
-  dw $535C,$3214,$110C,$0000
-  dw $6B9E,$5B1A,$3A56,$0000
-  dw $6FFB,$71DF,$54BF,$0000
-  dw $4000,$5AD6,$2108,$7FFF
+  RGB 27,31,27, 24,22,26, 20,18,22, 00,00,00 ; BGP0
+  RGB 30,10,06, 24,09,09, 16,08,08, 00,00,00 ; BGP1 red
+  RGB 22,31,10, 12,25,01, 05,14,00, 00,00,00 ; BGP2 green
+  RGB 23,23,31, 18,19,31, 13,12,31, 00,08,16 ; BGP3 blue
+  RGB 28,26,20, 20,16,12, 12,08,04, 00,00,00 ; BGP4
+  RGB 30,28,26, 26,24,22, 22,18,14, 00,00,00 ; BGP5
+  RGB 27,31,27, 31,14,28, 31,05,21, 00,00,00 ; BGP6
+  INCLUDE "gfx/window.pal"                   ; BGP7 window
 
 InitialOBJPal::
-  dw $7FFF,$7FFF,$6B5A,$0000
-  dw $7FFF,$7FFF,$211F,$0000
-  dw $7FFF,$7FFF,$031F,$0000
-  dw $7FFF,$7FFF,$2390,$0000
-  dw $7FFF,$7FFF,$7353,$0000
-  dw $7FFF,$7FFF,$7E88,$0000
-  dw $7FFF,$7FFF,$7E1C,$0000
-  dw $7FFF,$7FFF,$3214,$0000
+  INCLUDE "gfx/sprite.pal"
 
 InitialBattlePal:
-  dw $7FFF,$6B5A,$5AD6,$0000
-  dw $7FFF,$211F,$0010,$0000
-  dw $7FFF,$031F,$01B4,$0000
-  dw $7FFF,$2390,$2200,$0000
-  dw $7FFF,$7353,$6A2D,$0000
-  dw $7FFF,$7E88,$7000,$0000
-  dw $7FFF,$7E1C,$7010,$0000
-  dw $4000,$5AD6,$2108,$7FFF
+  RGB 31,31,31, 26,26,26, 22,22,22, 00,00,00 ; BGP0 gray
+  RGB 31,31,31, 31,08,08, 16,00,00, 00,00,00 ; BGP1 red
+  RGB 31,31,31, 31,24,00, 20,13,00, 00,00,00 ; BGP2 yellow
+  RGB 31,31,31, 16,28,08, 00,16,08, 00,00,00 ; BGP3 green
+  RGB 31,31,31, 19,26,28, 13,17,26, 00,00,00 ; BGP4 skyblue
+  RGB 31,31,31, 08,20,31, 00,00,28, 00,00,00 ; BGP5 darkblue
+  RGB 31,31,31, 28,16,31, 16,00,28, 00,00,00 ; BGP6 purple
+  INCLUDE "gfx/window.pal"                   ; BGP7 window
 
 InitialTitlePal::
-  dw $0000,$0000,$7FFF,$001F
-  dw $0000,$7FFF,$001F,$7FFF
-  dw $4809,$0000,$0000,$73DF
-  dw $600C,$0000,$0000,$7FFF
-  dw $4809,$0000,$0000,$7FFF
-  dw $0000,$0000,$0000,$7FFF
-  dw $0000,$0000,$0000,$7FFF
-  dw $4000,$5AD6,$2108,$7FFF
-  PRINTLN STRFMT("InitialPal size: %d bytes", @ - InitialPal)
+  RGB 00,00,00, 00,00,00, 31,31,31, 31,00,00 ; BGP0
+  RGB 00,00,00, 31,31,31, 31,00,00, 31,31,31 ; BGP1
+  RGB 00,00,00, 00,00,00, 00,00,00, 31,31,31 ; BGP2
+  RGB 00,00,00, 00,00,00, 00,00,00, 31,31,31 ; BGP3
+  RGB 00,00,00, 00,00,00, 00,00,00, 31,31,31 ; BGP4
+  RGB 00,00,00, 00,00,00, 00,00,00, 31,31,31 ; BGP5
+  RGB 00,00,00, 00,00,00, 00,00,00, 31,31,31 ; BGP6
+  INCLUDE "gfx/window.pal"                   ; BGP7 window
 InitialPalEnd::
 
 PaletteLookup::
