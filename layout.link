@@ -1,6 +1,6 @@
 ROM0
     org $01E3 ; 29 Bytes
-      "Free_MapCode2"   ; 24 Bytes
+      "Free_MapCode2"
     org $0200
   ;
     org $0224 ; 267 Bytes
@@ -9,7 +9,7 @@ ROM0
     org $032F
   ;
     org $144F ; 23 Bytes
-      "Free_MenuCode" ; 17 Bytes
+      "Free_MenuCode"
     org $1466
   ;
     org $2CFF ; 15 Bytes

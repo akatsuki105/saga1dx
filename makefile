@@ -12,7 +12,7 @@ FIXFLAGS = -p ${PADVALUE} -i "${GAMEID}" -k "${LICENSEE}" -l ${OLDLIC} -m ${MBC}
 
 VANILLA = ${NAME}.gb
 ROM = build/${ROMNAME}.gbc
-IPS = build/${ROMNAME}DX.ips
+IPS = build/${ROMNAME}.ips
 SRCS := $(shell find src -type f -name '*.asm')
 OBJS := $(patsubst src/%.asm,obj/%.o,${SRCS})
 DEPFILES := ${OBJS:.o=.mk}
