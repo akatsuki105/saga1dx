@@ -1,4 +1,4 @@
-SECTION "wFarCall2", WRAM0[$C0A0]
+SECTION "wFarCall2", WRAM0[$C38A]
 wFarCall2::
   ; ld a, ??
   db

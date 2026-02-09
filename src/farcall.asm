@@ -36,6 +36,7 @@ FarCall2::
   pop af
   dec sp
   ei
+.call_w
   call wFarCall2
   push af
   push hl

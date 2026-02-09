@@ -61,10 +61,6 @@ PlayerSpriteAttribute:
   farcall _PlayerSpriteAttribute
   ret
 
-EffectSpriteAttribute:
-  farcall _EffectSpriteAttribute
-  ret
-
 SECTION FRAGMENT "bank8", ROMX
 LoadSpriteAttrs::
   set_wrambank WRAM_SPRITE_BANK
@@ -262,28 +258,25 @@ NPCSpriteAttribute::
   inc l
   ret
 
-_EffectSpriteAttribute::
-  push af
-  set_wrambank WRAM_SPRITE_BANK
-  pop af
+SECTION "EffectSpriteAttribute", ROM0[$0469]
+; parameters:
+;  hl = wOAMx.2 (e.g. $CCx2), a = tile id, c = OAM.3
+EffectSpriteAttribute::
   push bc
-  push af
   ld [hli], a
   ;load $D400 + A into HL
   push hl
-    ld h, $D4
-    ld l, a
-    ;load metatile attribute from HL into C, combining it with the original attributes
-    ld a, [hl]
-    or c
-    ld c, a
+  ld h, $D4
+  ld l, a
+  set_wrambank WRAM_SPRITE_BANK
+  ;load metatile attribute from HL into C, combining it with the original attributes
+  ld a, [hl]
+  or c ; c = vanilla attr | dx attr
+  ld c, a
+  set_wrambank 1
   pop hl
-  pop af
   ;Original code
   ld [hl], c
   inc hl
   pop bc
-  push af
-  set_wrambank 1
-  pop af
   ret

@@ -49,7 +49,7 @@ WriteMetatileToVRAM:
   ld [wRequestedPalette], a
   dec a
   ld [wLastFadeValue], a
-  set_wrambank 0
+  set_wrambank 1
   pop af
   farcall _WriteMetatileToVRAM
   ret

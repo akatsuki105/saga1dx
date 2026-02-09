@@ -170,7 +170,7 @@ ResetWRAM0:
 .copyWRAMCode
   ld hl, TemplateC380
   ld de, wC380
-  ld b, $13
+  ld b, $a
   call memcpy8
 .setFarCall2
   ld a, $3E ; ld

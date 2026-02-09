@@ -2,6 +2,8 @@ SECTION "wOAM1", WRAM0[$C000]
 wOAM1::
   ds $A0
 
+; C0A0..C0FF は 戦闘中の処理(フレアなどのエフェクト)に使われるっぽい
+
 SECTION "wOAM2", WRAM0[$C100]
 ; キャラクターのアニメーション用
 wOAM2::
@@ -18,16 +20,6 @@ SECTION "wFarCall", WRAM0[$C38A]
 ; FarCall が ? 部分を目的の値に書き換えてからここにジャンプする
 ; このパッチでは FarCall2 (SaGa2 で使われている FarCall) を使うようにしたので、このコードは使われない
 wFarCall::
-  db  ; call dst
-.Dst::
-  dw   ; call destination address
-  db   ; push af
-  db   ; ld a, ??
-.CallerBank::
-  db
-  db   ; rst SwitchBank
-  db   ; pop af
-  db   ; ret
 
 SECTION "wVBlank", WRAM0[$C39A]
 wVBlank::
